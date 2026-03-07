@@ -1,0 +1,245 @@
+# Default config for sway
+# Organizado em categorias para facilitar a leitura.
+
+# ==========================================
+# 1. VARIÁVEIS PRINCIPAIS
+# ==========================================
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+
+# Your preferred terminal emulator
+set $term foot
+
+# [MODIFICADO] Menu antigo (bemenu) comentado:
+# set $menu bemenu-run -b --nb "#000000" --nf "#ffffff" --sb "#005f87" --sf "#ffffff" --hb "#005f87" --hf "#ffffff" --ab "#000000" --af "#ffffff" --fbb "#000000" --fbf "#ffffff" --scb "#000000" --scf "#ffffff" --tf "#ffffff" --tb "#000000" --fb "#000000" --ff "#ffffff" -p "Escolha uma opção:"
+#
+# Novo Menu (Wofi) - Obedece o tema GTK:
+set $menu wofi --show drun
+
+# ==========================================
+# 2. CONFIGURAÇÕES DE LAYOUT E WORKSPACES
+# ==========================================
+workspace_layout tabbed
+
+# ==========================================
+# 3. CONFIGURAÇÕES DE SAÍDA (MONITORES)
+# ==========================================
+# Default wallpaper
+output "*" bg ~/Imagens/Sway_original_dark.png fill
+
+# Example configuration:
+# output HDMI-A-2 resolution 1920x1080 position 1920,0
+
+# ==========================================
+# 4. CONFIGURAÇÕES DE ENTRADA (TECLADO/MOUSE)
+# ==========================================
+# Touchpad:
+input "1267:154:Elan_Touchpad" {
+    tap enabled
+    natural_scroll enabled
+}
+
+# Teclado:
+input * {
+    xkb_layout "br"
+}
+input <identificador> xkb_model "pc105"
+
+# Numlock ativado por padrão
+input type:keyboard xkb_numlock enabled
+
+# ==========================================
+# 5. INICIALIZAÇÃO E AUTOSTART (EXEC)
+# ==========================================
+# Xwayland
+# xwayland enable
+
+# Iniciar Thunar junto com sway
+exec thunar --daemon
+
+# WOB (Overlay de volume/brilho) - Inicialização
+set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
+exec rm -f $WOBSOCK && mkfifo $WOBSOCK && tail -f $WOBSOCK | wob
+
+# [MODIFICADO] Idle antigo comentado:
+# exec swayidle -w \
+#      timeout 1800 'swaylock -f -c 000000' \
+#      timeout 2400 'swaymsg "output * dpms off"' \
+#      resume 'swaymsg "output * dpms on"' \
+#      before-sleep 'swaylock -f -c 000000'
+
+# Novo Idle com fix para a Waybar atualizar na volta da suspensão:
+exec swayidle -w \
+     timeout 1800 'swaylock -f -c 000000' \
+     timeout 2400 'swaymsg "output * dpms off"' \
+     resume 'swaymsg "output * dpms on" && killall -SIGUSR2 waybar' \
+     before-sleep 'swaylock -f -c 000000'
+
+# ==========================================
+# 6. ATALHOS DE TECLADO (BINDS)
+# ==========================================
+
+### Básico do Sistema
+bindsym $mod+Return exec $term
+bindsym $mod+q kill
+bindsym $mod+d exec $menu
+floating_modifier $mod normal
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym $mod+shift+a exec foot nano ~/.config/sway/config
+
+### Aplicativos
+bindsym $mod+b exec firefox
+bindsym $mod+z exec thunar
+bindsym $mod+escape exec foot --font=monospace:size=10 btop
+# bindsym XF86Calculator exec galculator
+# bindsym XF86Search exec $menu
+
+### Scripts e Ferramentas Customizadas
+bindsym $mod+f4 exec "foot ~/.config/sway/apps/systemctl.control.sh"
+bindsym $mod+shift+f4 exec foot ~/.config/sway/apps/energia.sh
+bindsym $mod+v exec foot ~/.config/sway/apps/saida-de-audio.sh
+bindsym $mod+Shift+t exec bash -c ~/.config/sway/apps/text-extractor.sh
+
+### Captura de Tela
+bindsym $mod+shift+f5 exec sh -c 'slurp | grim -g - ~/Imagens/screenshot/$(date +%Y%m%d%H%M%S).png'
+bindsym $mod+f5 exec sh -c 'grim ~/Imagens/screenshot/$(date +'%Y%m%d%H%M%S').png'
+
+### Hardware / Mídia / Telas
+# Ligar e desligar tela do notebook
+bindsym $mod+shift+m exec swaymsg output eDP-1 disable
+bindsym $mod+m exec swaymsg output eDP-1 enable
+
+# Teclas de mídia (originais comentadas caso precise)
+# bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+# bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+# bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+# bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+# bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+# bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
+# bindsym XF86AudioPlay exec playerctl play-pause
+# bindsym XF86AudioNext exec playerctl next
+# bindsym XF86AudioPrev exec playerctl previous    
+
+# Wob com ajuste de som
+bindsym $mod+shift+f10 exec pactl set-sink-volume @DEFAULT_SINK@ +5% && pactl get-sink-volume @DEFAULT_SINK@ | awk 'NR==1{print substr($5,1,length($5)-1)}' > $WOBSOCK
+bindsym $mod+shift+f9 exec pactl set-sink-volume @DEFAULT_SINK@ -5% && pactl get-sink-volume @DEFAULT_SINK@ | awk 'NR==1{print substr($5,1,length($5)-1)}' > $WOBSOCK
+
+# Wob com ajuste de brilho
+bindsym $mod+shift+f6 exec brightnessctl set 5%- | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
+bindsym $mod+shift+f7 exec brightnessctl set +5% | sed -En 's/.*\(([0-9]+)%\).*/\1/p' > $WOBSOCK
+
+# Bloqueio de tela e suspensão (comentado originalmente)
+# bindsym $mod+Shift+i exec systemctl suspend && swaylock -c 000000 && swaymsg reload
+
+### Navegação de Janelas
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+### Áreas de Trabalho (Workspaces)
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# Navegação entre as áreas de trabalho por gesto (Touchpad)
+bindgesture swipe:right exec ~/.config/sway/apps/switch_workspace.sh prev
+bindgesture swipe:left exec ~/.config/sway/apps/switch_workspace.sh next
+
+### Modificadores de Layout
+bindsym $mod+semicolon split toggle
+bindsym $mod+Shift+u layout toggle all
+bindsym $mod+f fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+### Scratchpad
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+### Modo de Redimensionamento (Resize)
+mode "resize" {
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# ==========================================
+# 7. REGRAS DE JANELAS (WINDOW RULES)
+# ==========================================
+# for_window [app_id="galculator"] floating enable
+# for_window [app_id="steam"] floating enable
+for_window [app_id="codium"] fullscreen enable
+
+# ==========================================
+# 8. BARRA DE STATUS
+# ==========================================
+# [MODIFICADO] Barra Antiga comentada:
+# bar {
+#     position bottom
+#     status_command while ~/.config/sway/apps/status.sh; do sleep 1; done 
+#     colors {
+#         statusline #ffffff
+#         background #000000
+#         height 20
+#         inactive_workspace #000000 #000000 #ffffff
+#     }
+# }
+
+# Nova Barra (Waybar):
+bar {
+     swaybar_command waybar
+}
+
+# ==========================================
+# 9. INCLUDES
+# ==========================================
+include /etc/sway/config-vars.d/*
+include /etc/sway/config.d/*
