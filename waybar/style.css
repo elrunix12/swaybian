@@ -43,20 +43,26 @@ window#waybar {
 
 /* Áreas de Trabalho */
 #workspaces button {
-    padding: 0 10px;
+    padding: 0 12px;
+    margin: 4px 2px; /* Margem para alinhar com a altura dos outros módulos */
+    border-radius: 8px; /* Mesmo arredondamento do relógio/bateria */
     color: @subtext0;
     background-color: transparent;
+    transition: all 0.2s ease-in-out; /* Deixa o hover e foco mais suaves */
 }
 
 #workspaces button:hover {
-    background: @surface0;
+    background-color: @surface0;
     color: @text;
 }
 
-#workspaces button.focused {
-    color: @mauve;
-    background-color: @surface1;
-    border-bottom: 2px solid @mauve;
+/* Nota: Waybar no Hyprland costuma usar .active, enquanto no Sway usa .focused. 
+   Deixei ambos para garantir que funcione perfeitamente. */
+#workspaces button.focused,
+#workspaces button.active {
+    color: @base; /* Cor do texto escura para contrastar com o fundo */
+    background-color: @mauve; /* Fundo com a cor de destaque (minimalista e no formato de pílula) */
+    border: none; /* Remove qualquer borda */
 }
 
 /* Módulos Individuais */
