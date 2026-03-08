@@ -1,0 +1,5 @@
+# Organiza os aplicativos em ordem alfabética crescente (A-Z)
+sort_order=alphabetical
+
+# Ignora letras maiúsculas e minúsculas na hora que você for digitar para pesquisar
+insensitive=true
