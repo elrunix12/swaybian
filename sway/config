@@ -33,12 +33,12 @@ set $crust     #11111b
 # =======================================
 
 # Tamanho das bordas (2px fica bem elegante)
-default_border pixel 2
-default_floating_border pixel 2
+default_border pixel 1
+default_floating_border pixel 1
 
 # Espaçamento (Gaps) entre as janelas para dar aquele respiro visual
-gaps inner 8
-gaps outer 4
+gaps inner 2
+gaps outer 2
 
 # Cores das janelas
 # class                 border    bground   text    indicator child_border
@@ -152,7 +152,7 @@ bindsym $mod+escape exec foot --font=monospace:size=10 btop
 
 ### Scripts e Ferramentas Customizadas
 bindsym $mod+f4 exec "foot ~/.config/sway/apps/systemctl.control.sh"
-bindsym $mod+shift+f4 exec foot ~/.config/sway/apps/energia.sh
+bindsym $mod+shift+f4 exec ~/.config/sway/apps/energia.sh
 bindsym $mod+v exec foot ~/.config/sway/apps/saida-de-audio.sh
 bindsym $mod+Shift+t exec bash -c ~/.config/sway/apps/text-extractor.sh
 
