@@ -31,7 +31,7 @@
     border: none;
     border-radius: 0;
     font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", monospace;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: bold;
 }
 
@@ -43,30 +43,35 @@ window#waybar {
 
 /* Áreas de Trabalho */
 #workspaces button {
-    padding: 0 10px;
+    padding: 0 0px;
+    margin: 1px 1px; /* Margem para alinhar com a altura dos outros módulos */
+    border-radius: 6px; /* Mesmo arredondamento do relógio/bateria */
     color: @subtext0;
     background-color: transparent;
+    transition: all 0.2s ease-in-out; /* Deixa o hover e foco mais suaves */
 }
 
 #workspaces button:hover {
-    background: @surface0;
+    background-color: @surface0;
     color: @text;
 }
 
-#workspaces button.focused {
-    color: @mauve;
-    background-color: @surface1;
-    border-bottom: 2px solid @mauve;
+#workspaces button.focused,
+#workspaces button.active {
+    color: @base; /* Cor do texto escura para contrastar com o fundo */
+    background-color: @mauve; /* Fundo com a cor de destaque (minimalista e no formato de pílula) */
+    border: none; /* Remove qualquer borda */
 }
 
 /* Módulos Individuais */
 #clock,
 #battery,
 #network,
-#pulseaudio {
+#pulseaudio,
+#idle_inhibitor {
     padding: 0 15px;
-    margin: 4px 4px;
-    border-radius: 8px;
+    margin: 1px 1px;
+    border-radius: 6px;
     background-color: @surface0;
     color: @text;
 }
@@ -99,6 +104,14 @@ window#waybar {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+}
+
+#idle_inhibitor {
+    color: @subtext0; /* Cor mais discreta quando o notebook pode dormir */
+}
+
+#idle_inhibitor.activated {
+    color: @yellow; /* Cor de destaque (amarelo) quando estiver bloqueando a suspensão */
 }
 
 @keyframes blink {

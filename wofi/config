@@ -1,0 +1,19 @@
+# Organiza os aplicativos em ordem alfabética crescente (A-Z)
+sort_order=alphabetical
+
+# Ignora letras maiúsculas e minúsculas na hora que você for digitar para pesquisar
+insensitive=true
+
+# Desativa as árvores/submenus dos aplicativos (remove a seta >)
+no_actions=true
+
+# --- NOVAS CONFIGURAÇÕES PARA PERFORMANCE ---
+
+# Desativa os ícones dos aplicativos
+allow_images=false
+
+# Desativa a leitura de formatação de texto avançada
+allow_markup=false
+
+# Limita a quantidade de resultados na tela
+#lines=6

@@ -1,12 +1,12 @@
 {
     "layer": "top",
-    "position": "bottom",
-    "height": 30,
-    "spacing": 8,
+    "position": "top",
+    "height": 20,
+    "spacing": 4,
     
     "modules-left": ["sway/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["network", "pulseaudio", "battery"],
+    "modules-right": ["network", "pulseaudio", "battery", "idle_inhibitor"],
 
     "sway/workspaces": {
         "disable-scroll": true,
@@ -16,7 +16,8 @@
 
     "clock": {
         "format": "{:%H:%M  |  %d/%m/%Y}",
-        "tooltip-format": "<tt><small>{calendar}</small></tt>"
+	"on-click": "gsimplecal",
+	"tooltip": false
     },
 
     "battery": {
@@ -31,11 +32,13 @@
     },
 
     "network": {
+        "format": "Sem Rede ⚠",
         "format-wifi": "{essid} ",
         "format-ethernet": "Conectado ",
+        "format-linked": "Conectando... ⚠",
         "format-disconnected": "Sem Rede ⚠",
         "tooltip-format": "{ifname} via {gwaddr}",
-        "on-click": "foot nmtui"
+        "on-click": "bash ~/.config/sway/apps/internet.sh &"
     },
 
     "pulseaudio": {
@@ -47,5 +50,16 @@
             "default": ["", "", ""]
         },
         "on-click": "pavucontrol"
+    },
+
+     "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "", // Ícone de olho aberto (Inibido/Não vai dormir)
+            "deactivated": "" // Ícone de olho fechado (Normal/Vai dormir)
+        },
+        "tooltip": true,
+        "tooltip-format-activated": "Modo Cafeína: Ativado (Não vai suspender)",
+        "tooltip-format-deactivated": "Modo Cafeína: Desativado"
     }
 }

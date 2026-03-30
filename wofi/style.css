@@ -1,0 +1,60 @@
+/* =======================================
+   Base da Janela (Fix para pontas pretas)
+   ======================================= */
+window {
+    margin: 0px;
+    border: none;
+    background-color: transparent; /* Isso remove os cantos pretos! */
+}
+
+/* =======================================
+   Caixa Principal 
+   ======================================= */
+#outer-box {
+    margin: 5px;
+    background-color: #1e1e2e; /* $base */
+    border-radius: 15px;       /* Cantos arredondados */
+    border: 2px solid #cba6f7; /* $mauve - Borda com a sua cor de foco */
+    padding: 15px;
+}
+
+/* =======================================
+   Barra de Pesquisa (Input)
+   ======================================= */
+#input {
+    margin-bottom: 10px;
+    background-color: #313244; /* $surface0 */
+    color: #cdd6f4;            /* $text */
+    border: 1px solid #585b70; /* $surface2 */
+    border-radius: 10px;
+    padding: 1px 12px;
+}
+
+/* =======================================
+   Área de Rolagem e Itens da Lista
+   ======================================= */
+#scroll {
+    margin: 0px;
+}
+
+#entry {
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 2px;
+}
+
+#text {
+    color: #cdd6f4; /* $text */
+}
+
+/* =======================================
+   Item Selecionado (Hover/Focus)
+   ======================================= */
+#entry:selected {
+    background-color: #cba6f7; /* $mauve */
+}
+
+#entry:selected #text {
+    color: #1e1e2e; /* $base - Texto escuro para contrastar com o fundo claro */
+    font-weight: bold;
+}
